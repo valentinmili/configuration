@@ -1,0 +1,14 @@
+# Required for the Alt-key tmux bindings in tmux.conf
+macos-option-as-alt = true
+
+# Shift+Enter sends a newline instead of submitting — useful for multi-line
+# prompts in Claude Code / Codex.
+keybind = shift+enter=text:\n
+
+theme = catppuccin-mocha
+font-size = 14
+window-padding-x = 8
+window-padding-y = 6
+cursor-style = block
+copy-on-select = clipboard
+confirm-close-surface = false

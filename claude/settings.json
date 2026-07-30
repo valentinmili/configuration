@@ -1,0 +1,17 @@
+{
+  "$comment": "Merged into ~/.claude/settings.json by install.sh. Empty attribution strings strip the Co-Authored-By / 'Generated with Claude Code' trailers so agent commits are authored purely as valentinmili.",
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "includeCoAuthoredBy": false,
+  "model": "opus[1m]",
+  "effortLevel": "high",
+  "alwaysThinkingEnabled": false,
+  "env": {
+    "GIT_AUTHOR_NAME": "valentinmili",
+    "GIT_AUTHOR_EMAIL": "96443138+valentinmili@users.noreply.github.com",
+    "GIT_COMMITTER_NAME": "valentinmili",
+    "GIT_COMMITTER_EMAIL": "96443138+valentinmili@users.noreply.github.com"
+  }
+}

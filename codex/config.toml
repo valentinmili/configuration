@@ -1,0 +1,5 @@
+# Merged into ~/.codex/config.toml by install.sh.
+# Keeps Codex-authored commits attributed to valentinmili with no agent trailers.
+[git]
+author_name = "valentinmili"
+author_email = "96443138+valentinmili@users.noreply.github.com"
