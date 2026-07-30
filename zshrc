@@ -1,9 +1,10 @@
 # ─── PATH & Homebrew ────────────────────────────────────────────────────
-if [ -x /opt/homebrew/bin/brew ]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-elif [ -x /home/linuxbrew/.linuxbrew/bin/brew ]; then
-  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-fi
+# This machine has both an ARM (/opt/homebrew) and an Intel (/usr/local)
+# Homebrew. Source both; the last one wins on PATH precedence.
+for _brew in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+  [ -x "$_brew" ] && eval "$("$_brew" shellenv)"
+done
+unset _brew
 
 export PATH="$HOME/.local/bin:$PATH"
 
