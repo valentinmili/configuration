@@ -5,8 +5,8 @@
     "pr": ""
   },
   "includeCoAuthoredBy": false,
-  "model": "opus[1m]",
-  "effortLevel": "high",
+  "model": "claude-fable-5[1m]",
+  "effortLevel": "xhigh",
   "alwaysThinkingEnabled": false,
   "env": {
     "GIT_AUTHOR_NAME": "valentinmili",
