@@ -23,6 +23,24 @@ claude -p --dangerously-skip-permissions "Clone https://github.com/valentinmili/
 attribution, verification checklist, rollback. Paste it into any machine or hand
 it to an agent.
 
+## Key features
+
+- **One-keystroke agents** — `M-c` spawns Claude Code, `M-x` spawns Codex, in a
+  tiled pane or a tab. Panes auto-tile on open and close.
+- **Ctrl-C-safe agent panes** — agents run in a wrapper shell, so killing the
+  agent drops back to zsh instead of closing the pane.
+- **No prefix key** — every tmux binding is a single Alt chord (`M-hjkl`
+  navigate, `M-z` zoom, `M-g` lazygit popup, `M-f` yazi popup, `M-/` help).
+- **Works in any macOS terminal** — Ghostty, cmux, Terminal.app, and Zed are
+  auto-configured to send Option as Alt; full mouse support everywhere.
+- **Commit as yourself, always** — agent commits are authored as `valentinmili`
+  with no AI trailers, enforced at four layers (agent instructions, agent
+  config, git identity, a global `commit-msg` hook).
+- **Modern shell without the framework tax** — starship, autosuggestions,
+  syntax highlighting, eza/bat/zoxide/fzf, plain git clones instead of oh-my-zsh.
+- **Idempotent installer** — safe to re-run; existing files are backed up, and
+  machine-specific config lives in untracked `~/.zshrc.local`.
+
 ## Contents
 
 | File | Purpose |
