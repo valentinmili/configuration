@@ -237,7 +237,9 @@ rm -f "$tmp"
 exit 0
 HOOK
 chmod +x "$HOOKS_DIR/commit-msg"
-git config --global core.hooksPath "$HOOKS_DIR"
+# Tilde form on purpose: ~/.gitconfig is a symlink into the repo, so an
+# absolute path here would commit a machine-specific path. Git expands ~.
+git config --global core.hooksPath "~/.config/git/hooks"
 ok "global commit-msg hook installed (strips agent trailers)"
 
 # 5e. Make sure identity is set globally even if ~/.gitconfig was skipped.
