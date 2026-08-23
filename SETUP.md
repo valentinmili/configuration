@@ -8,17 +8,25 @@ any machine or hand it to an AI agent, with or without cloning the repo.
 
 ## 1. The one-liner
 
+**Human:**
+
 ```sh
-git clone https://github.com/valentinmili/valentin-dotfiles.git ~/dotfiles && bash ~/dotfiles/install.sh
+git clone https://github.com/valentinmili/valentin-dotfiles.git ~/valentin-dotfiles && bash ~/valentin-dotfiles/install.sh
 ```
 
 Idempotent — safe to re-run. Existing files are backed up to `*.bak.<timestamp>`.
 Open a new shell when it finishes (`exec zsh -l`).
 
-Over SSH, in one shot:
+**Agent** (Claude Code headless; same prompt works for Codex via `codex exec --yolo`):
 
 ```sh
-ssh <host> 'git clone https://github.com/valentinmili/valentin-dotfiles.git ~/dotfiles && bash ~/dotfiles/install.sh'
+claude -p --dangerously-skip-permissions "Clone https://github.com/valentinmili/valentin-dotfiles.git to ~/valentin-dotfiles, run 'bash ~/valentin-dotfiles/install.sh', then run the post-install checklist in SETUP.md §7 and report the results"
+```
+
+**Over SSH, in one shot:**
+
+```sh
+ssh <host> 'git clone https://github.com/valentinmili/valentin-dotfiles.git ~/valentin-dotfiles && bash ~/valentin-dotfiles/install.sh'
 ```
 
 ---
@@ -46,8 +54,14 @@ upstream install scripts for tools that distro repos don't carry.
 | `starship.toml` | `~/.config/starship.toml` |
 | `config/ghostty/config` | `~/.config/ghostty/config` (macOS only) |
 
+**Terminal Option-as-Alt (macOS)** — Terminal.app gets *Use Option as Meta key*
+enabled on the default profile, Zed gets `terminal.option_as_meta = true`
+(inserted textually so JSONC comments survive). Ghostty and cmux are covered by
+the symlinked Ghostty config. See §3a.
+
 **Agent attribution** — merged into `~/.claude/settings.json` and
-`~/.codex/config.toml`, plus a global `commit-msg` hook. See §4.
+`~/.codex/config.toml`, an attribution rule appended to `~/.claude/CLAUDE.md`,
+plus a global `commit-msg` hook. See §4.
 
 ---
 
@@ -61,7 +75,7 @@ The core of this setup. All bindings are **Alt (`M-`) with no prefix key** — n
 | --- | --- |
 | `M-c` / `M-x` / `M-t` | New **pane**: Claude / Codex / shell |
 | `M-C` / `M-X` / `M-T` | New **tab**: Claude / Codex / shell |
-| `M-n` | Menu to pick what to spawn |
+| `M-n` (or `M-m`) | Menu to pick what to spawn |
 | `M-Tab`, `M-[`, `M-]` | Cycle / prev / next tab |
 | `M-1`..`M-5` | Jump to tab by number |
 | `M-h/j/k/l` | Navigate panes (vim) |
@@ -71,7 +85,7 @@ The core of this setup. All bindings are **Alt (`M-`) with no prefix key** — n
 | `M-o` | Switch session |
 | `M-g` | lazygit popup |
 | `M-f` | yazi file-manager popup |
-| `M-e` | Scroll mode (`j`/`k` scroll, `J`/`K` half-page) |
+| `M-e` (or `M-s`) | Scroll mode (`j`/`k` scroll, `J`/`K` half-page) |
 | `M-w` | Kill pane |
 | `M-d` | Detach (session keeps running) |
 | `M-R` | Reload config |
@@ -82,16 +96,31 @@ Panes auto-tile on split and on close. Mouse is on: click to focus, drag borders
 to resize, wheel scrolls history, drag-select then `Enter` copies to the system
 clipboard.
 
-> **macOS:** Alt bindings need `macos-option-as-alt = true` in the terminal.
-> Ghostty gets this from `config/ghostty/config`. In iTerm2, set *Left Option
-> key → Esc+*.
+### 3a. Terminal support (macOS)
+
+The `M-` bindings need the terminal to send **Option as Alt/Meta**. The
+installer configures every terminal it can reach:
+
+| Terminal | Mechanism | Notes |
+| --- | --- | --- |
+| **Ghostty** | `macos-option-as-alt = true` in the symlinked config | works out of the box |
+| **cmux** | reads `~/.config/ghostty/config` (cmux ≥ 0.64.16) | reload with `Cmd+Shift+,` or restart cmux after install. Dead-key Option combos (`e i u n` `` ` ``) can be consumed by macOS composition there — that's why `M-m` and `M-s` alias `M-n` and `M-e` |
+| **Terminal.app** | installer enables *Use Option as Meta key* on the default & startup profiles | open a **new** window; if Terminal was running during install and the setting reverts, enable it in Settings → Profiles → Keyboard |
+| **Zed** | installer inserts `"terminal": { "option_as_meta": true }` into `~/.config/zed/settings.json` | comments in the JSONC file are preserved |
+| **iTerm2** | manual | Profiles → Keys → *Left Option key → Esc+* |
 
 ---
 
 ## 4. Agent commit attribution
 
-Goal: **every commit — mine or any AI agent's — is authored by `valentinmili`
-with no agent trailers.** Three independent layers, so a gap in one doesn't leak.
+Goal: **every commit and push — mine or any AI agent's — is authored by
+`valentinmili` with no agent trailers.** Four independent layers, so a gap in
+one doesn't leak.
+
+**Layer 0 — agent instructions.** `claude/CLAUDE.md` is appended to
+`~/.claude/CLAUDE.md` (idempotent, marker-guarded): a standing rule that every
+agent commit and push is authored as `valentinmili` with no AI attribution,
+even in repos with a different local git user.
 
 **Layer 1 — git identity** (`gitconfig`)
 
@@ -207,7 +236,7 @@ cp ~/.bashrc.dotfiles-bak ~/.bashrc
 ## 9. Manual install, no script
 
 ```sh
-D=~/dotfiles
+D=~/valentin-dotfiles
 ln -sf $D/zshrc            ~/.zshrc
 ln -sf $D/tmux.conf        ~/.tmux.conf
 ln -sf $D/gitconfig        ~/.gitconfig

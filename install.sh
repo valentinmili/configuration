@@ -98,6 +98,73 @@ link gitignore_global .gitignore_global
 link starship.toml    .config/starship.toml
 [ "$OS" = "Darwin" ] && link config/ghostty/config .config/ghostty/config
 
+# ─── 4b. Option-as-Alt (macOS terminals) ─────────────────────────────────
+# The M- tmux bindings need the terminal to send Option as Alt/Meta.
+#   Ghostty      — via the config symlinked above (macos-option-as-alt = true)
+#   cmux         — reads ~/.config/ghostty/config (>= 0.64.16); reload with
+#                  Cmd+Shift+, or restart cmux. Dead-key combos (M-e, M-n)
+#                  may still be eaten there — M-s / M-m are bound as aliases.
+#   Terminal.app — "Use Option as Meta key", set below
+#   Zed          — terminal.option_as_meta, set below
+#   iTerm2       — manual: Profiles → Keys → Left Option key → Esc+
+if [ "$OS" = "Darwin" ]; then
+  say "Configuring Option-as-Alt…"
+
+  # Terminal.app: enable on the default & startup profiles. Round-trip through
+  # defaults export/import so cfprefsd stays in sync.
+  if defaults read com.apple.Terminal "Default Window Settings" >/dev/null 2>&1; then
+    TPLIST="$(mktemp)"
+    defaults export com.apple.Terminal "$TPLIST"
+    if python3 - "$TPLIST" <<'PY'
+import plistlib, sys
+p = sys.argv[1]
+with open(p, "rb") as f:
+    d = plistlib.load(f)
+ws = d.get("Window Settings", {})
+targets = {d.get("Default Window Settings"), d.get("Startup Window Settings")} & set(ws)
+for name in targets or set(ws):
+    ws[name]["useOptionAsMetaKey"] = True
+with open(p, "wb") as f:
+    plistlib.dump(d, f)
+PY
+    then
+      defaults import com.apple.Terminal "$TPLIST"
+      ok "Terminal.app: Use Option as Meta key (open a NEW Terminal window; if it reverts, enable in Settings → Profiles → Keyboard)"
+    else
+      warn "Terminal.app: enable Settings → Profiles → Keyboard → 'Use Option as Meta key' manually"
+    fi
+    rm -f "$TPLIST"
+  else
+    warn "Terminal.app: enable Settings → Profiles → Keyboard → 'Use Option as Meta key' manually"
+  fi
+
+  # Zed: settings.json is JSONC (comments, trailing commas) — insert textually
+  # so user comments survive.
+  ZED="$HOME/.config/zed/settings.json"
+  if [ ! -f "$ZED" ]; then
+    mkdir -p "$(dirname "$ZED")"
+    printf '{\n  "terminal": { "option_as_meta": true }\n}\n' > "$ZED"
+    ok "Zed: settings.json created with option_as_meta"
+  elif grep -q '"option_as_meta"' "$ZED"; then
+    ok "Zed: option_as_meta already set"
+  else
+    python3 - "$ZED" <<'PY' && ok "Zed: option_as_meta added" || warn 'Zed: add "terminal": { "option_as_meta": true } to settings.json manually'
+import re, sys
+p = sys.argv[1]
+s = open(p).read()
+m = re.search(r'"terminal"\s*:\s*\{', s)
+if m:
+    s = s[:m.end()] + ' "option_as_meta": true,' + s[m.end():]
+else:
+    m = re.search(r'\{', s)
+    if not m:
+        sys.exit(1)
+    s = s[:m.end()] + '\n  "terminal": { "option_as_meta": true },' + s[m.end():]
+open(p, "w").write(s)
+PY
+  fi
+fi
+
 # ─── 5. Agent commit attribution ─────────────────────────────────────────
 # Every AI coding agent commits as valentinmili with no agent trailers.
 say "Configuring agent commit attribution…"
@@ -144,7 +211,16 @@ elif ! grep -q "96443138+valentinmili" "$HOME/.codex/config.toml" 2>/dev/null; t
   ok "~/.codex/config.toml appended"
 fi
 
-# 5c. Belt-and-braces: a global commit-msg hook that strips agent trailers
+# 5c. Global CLAUDE.md rule — every agent commit/push is authored as valentinmili.
+CLAUDE_MD="$HOME/.claude/CLAUDE.md"
+MD_MARKER="valentin-dotfiles: attribution rule"
+if [ ! -f "$CLAUDE_MD" ] || ! grep -qF "$MD_MARKER" "$CLAUDE_MD"; then
+  [ -f "$CLAUDE_MD" ] && printf '\n' >> "$CLAUDE_MD"
+  cat "$DOTFILES/claude/CLAUDE.md" >> "$CLAUDE_MD"
+  ok "~/.claude/CLAUDE.md: attribution rule added"
+fi
+
+# 5d. Belt-and-braces: a global commit-msg hook that strips agent trailers
 #     from EVERY commit, whichever tool made it.
 HOOKS_DIR="$HOME/.config/git/hooks"
 mkdir -p "$HOOKS_DIR"
@@ -164,7 +240,7 @@ chmod +x "$HOOKS_DIR/commit-msg"
 git config --global core.hooksPath "$HOOKS_DIR"
 ok "global commit-msg hook installed (strips agent trailers)"
 
-# 5d. Make sure identity is set globally even if ~/.gitconfig was skipped.
+# 5e. Make sure identity is set globally even if ~/.gitconfig was skipped.
 git config --global user.name  "$GIT_NAME"
 git config --global user.email "$GIT_EMAIL"
 ok "git identity: $GIT_NAME <$GIT_EMAIL>"
