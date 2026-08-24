@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# valentin-dotfiles installer — idempotent, safe to re-run.
+# configuration installer — idempotent, safe to re-run.
 # macOS (brew) and Linux (apt / dnf / pacman).
 set -euo pipefail
 

@@ -1,4 +1,4 @@
-# valentin-dotfiles
+# configuration
 
 Shell + terminal setup built around **tmux as an AI-agent workspace**: one keystroke
 spawns Claude Code or Codex in a tiled pane, panes auto-tile, and Ctrl-C kills the
@@ -9,13 +9,13 @@ macOS (brew) and Linux (apt / dnf / pacman).
 **Install (human):**
 
 ```sh
-git clone https://github.com/valentinmili/valentin-dotfiles.git ~/valentin-dotfiles && bash ~/valentin-dotfiles/install.sh
+git clone https://github.com/valentinmili/configuration.git ~/configuration && bash ~/configuration/install.sh
 ```
 
 **Install (hand it to an agent):**
 
 ```sh
-claude -p --dangerously-skip-permissions "Clone https://github.com/valentinmili/valentin-dotfiles.git to ~/valentin-dotfiles, run 'bash ~/valentin-dotfiles/install.sh', then run the post-install checklist in SETUP.md §7 and report the results"
+claude -p --dangerously-skip-permissions "Clone https://github.com/valentinmili/configuration.git to ~/configuration, run 'bash ~/configuration/install.sh', then run the post-install checklist in SETUP.md §7 and report the results"
 # or: codex exec --yolo "<same prompt>"
 ```
 

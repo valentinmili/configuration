@@ -1,7 +1,7 @@
 # Session-only trial of these dotfiles. Nothing is symlinked or overwritten;
 # close the terminal and everything reverts.
 #
-#   source ~/Documents/hacking-editors/valentin-dotfiles/try.sh
+#   source ~/configuration/try.sh
 #
 # Then start tmux with the repo config:  tmux -f "$DOTFILES/tmux.conf" new -s try
 

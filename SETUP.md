@@ -11,7 +11,7 @@ any machine or hand it to an AI agent, with or without cloning the repo.
 **Human:**
 
 ```sh
-git clone https://github.com/valentinmili/valentin-dotfiles.git ~/valentin-dotfiles && bash ~/valentin-dotfiles/install.sh
+git clone https://github.com/valentinmili/configuration.git ~/configuration && bash ~/configuration/install.sh
 ```
 
 Idempotent — safe to re-run. Existing files are backed up to `*.bak.<timestamp>`.
@@ -20,13 +20,13 @@ Open a new shell when it finishes (`exec zsh -l`).
 **Agent** (Claude Code headless; same prompt works for Codex via `codex exec --yolo`):
 
 ```sh
-claude -p --dangerously-skip-permissions "Clone https://github.com/valentinmili/valentin-dotfiles.git to ~/valentin-dotfiles, run 'bash ~/valentin-dotfiles/install.sh', then run the post-install checklist in SETUP.md §7 and report the results"
+claude -p --dangerously-skip-permissions "Clone https://github.com/valentinmili/configuration.git to ~/configuration, run 'bash ~/configuration/install.sh', then run the post-install checklist in SETUP.md §7 and report the results"
 ```
 
 **Over SSH, in one shot:**
 
 ```sh
-ssh <host> 'git clone https://github.com/valentinmili/valentin-dotfiles.git ~/valentin-dotfiles && bash ~/valentin-dotfiles/install.sh'
+ssh <host> 'git clone https://github.com/valentinmili/configuration.git ~/configuration && bash ~/configuration/install.sh'
 ```
 
 ---
@@ -236,7 +236,7 @@ cp ~/.bashrc.dotfiles-bak ~/.bashrc
 ## 9. Manual install, no script
 
 ```sh
-D=~/valentin-dotfiles
+D=~/configuration
 ln -sf $D/zshrc            ~/.zshrc
 ln -sf $D/tmux.conf        ~/.tmux.conf
 ln -sf $D/gitconfig        ~/.gitconfig
