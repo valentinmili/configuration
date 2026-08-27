@@ -51,6 +51,7 @@ export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 alias yolo="claude --dangerously-skip-permissions"
 alias c="yolo"
 alias x="codex --yolo"
+alias o="opencode"
 
 # ─── yazi: cd to the directory you exit in ──────────────────────────────
 function y() {

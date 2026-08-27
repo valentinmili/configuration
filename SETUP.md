@@ -190,7 +190,7 @@ git log -1 --format='%an <%ae>%n---%n%B'
 Starship prompt (one small TOML, not 1600 generated lines). Aliases: `ls`/`ll`/
 `la`/`lt` → eza, `cat` → bat, `lg` → lazygit, `y` → yazi-with-cd-on-exit, `mkcd`,
 and git shortcuts `gs gd gl ga gc gp gco`. Agent aliases: `c` (Claude, skip
-permissions), `x` (Codex yolo).
+permissions), `x` (Codex yolo), `o` (OpenCode).
 
 **Machine-specific config goes in `~/.zshrc.local`** — sourced if present, never
 committed. Put work paths, secrets and per-host tweaks there instead of editing
