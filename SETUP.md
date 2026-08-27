@@ -73,8 +73,8 @@ The core of this setup. All bindings are **Alt (`M-`) with no prefix key** — n
 
 | Key | Action |
 | --- | --- |
-| `M-c` / `M-x` / `M-t` | New **pane**: Claude / Codex / shell |
-| `M-C` / `M-X` / `M-T` | New **tab**: Claude / Codex / shell |
+| `M-c` / `M-x` / `M-o` / `M-t` | New **pane**: Claude / Codex / OpenCode / shell |
+| `M-C` / `M-X` / `M-O` / `M-T` | New **tab**: Claude / Codex / OpenCode / shell |
 | `M-n` (or `M-m`) | Menu to pick what to spawn |
 | `M-Tab`, `M-[`, `M-]` | Cycle / prev / next tab |
 | `M-1`..`M-5` | Jump to tab by number |
@@ -82,7 +82,7 @@ The core of this setup. All bindings are **Alt (`M-`) with no prefix key** — n
 | `M-z` | Zoom / unzoom pane |
 | `M-r` | Rotate layout |
 | `M-p` | Rename pane (survives agent title spinners) |
-| `M-o` | Switch session |
+| `M-y` | Switch session |
 | `M-g` | lazygit popup |
 | `M-f` | yazi file-manager popup |
 | `M-e` (or `M-s`) | Scroll mode (`j`/`k` scroll, `J`/`K` half-page) |

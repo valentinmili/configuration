@@ -1,8 +1,8 @@
 # configuration
 
 Shell + terminal setup built around **tmux as an AI-agent workspace**: one keystroke
-spawns Claude Code or Codex in a tiled pane, panes auto-tile, and Ctrl-C kills the
-agent without killing the pane.
+spawns Claude Code, Codex, or OpenCode in a tiled pane, panes auto-tile, and Ctrl-C
+kills the agent without killing the pane.
 
 macOS (brew) and Linux (apt / dnf / pacman).
 
@@ -25,8 +25,8 @@ it to an agent.
 
 ## Key features
 
-- **One-keystroke agents** — `M-c` spawns Claude Code, `M-x` spawns Codex, in a
-  tiled pane or a tab. Panes auto-tile on open and close.
+- **One-keystroke agents** — `M-c` spawns Claude Code, `M-x` spawns Codex, `M-o`
+  spawns OpenCode, in a tiled pane or a tab. Panes auto-tile on open and close.
 - **Ctrl-C-safe agent panes** — agents run in a wrapper shell, so killing the
   agent drops back to zsh instead of closing the pane.
 - **No prefix key** — every tmux binding is a single Alt chord (`M-hjkl`
@@ -57,8 +57,9 @@ it to an agent.
 
 ## Quick reference
 
-`M-c` Claude pane · `M-x` Codex pane · `M-C`/`M-X` same as tabs · `M-hjkl` navigate ·
-`M-z` zoom · `M-g` lazygit · `M-f` yazi · `M-/` **help popup**
+`M-c` Claude pane · `M-x` Codex pane · `M-o` OpenCode pane · `M-C`/`M-X`/`M-O` same
+as tabs · `M-hjkl` navigate · `M-z` zoom · `M-g` lazygit · `M-f` yazi ·
+`M-/` **help popup**
 
 ## Terminals (macOS)
 
