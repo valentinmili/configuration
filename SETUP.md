@@ -53,6 +53,7 @@ upstream install scripts for tools that distro repos don't carry.
 | `gitignore_global` | `~/.gitignore_global` |
 | `starship.toml` | `~/.config/starship.toml` |
 | `config/ghostty/config` | `~/.config/ghostty/config` (macOS only) |
+| `opencode/opencode.json` | merged into `~/.config/opencode/opencode.json` |
 
 **Terminal Option-as-Alt (macOS)** — Terminal.app gets *Use Option as Meta key*
 enabled on the default profile, Zed gets `terminal.option_as_meta = true`
@@ -62,6 +63,12 @@ the symlinked Ghostty config. See §3a.
 **Agent attribution** — merged into `~/.claude/settings.json` and
 `~/.codex/config.toml`, an attribution rule appended to `~/.claude/CLAUDE.md`,
 plus a global `commit-msg` hook. See §4.
+
+**OpenCode permissions** — `"permission": "allow"` merged into
+`~/.config/opencode/opencode.json` so `o` / `M-o` run with full permissions,
+matching `claude --dangerously-skip-permissions` and `codex --yolo`. OpenCode
+has no equivalent CLI flag, so this lives in its config file; the merge keeps
+any providers or models already configured there.
 
 ---
 
@@ -190,7 +197,7 @@ git log -1 --format='%an <%ae>%n---%n%B'
 Starship prompt (one small TOML, not 1600 generated lines). Aliases: `ls`/`ll`/
 `la`/`lt` → eza, `cat` → bat, `lg` → lazygit, `y` → yazi-with-cd-on-exit, `mkcd`,
 and git shortcuts `gs gd gl ga gc gp gco`. Agent aliases: `c` (Claude, skip
-permissions), `x` (Codex yolo), `o` (OpenCode).
+permissions), `x` (Codex yolo), `o` (OpenCode, full permissions).
 
 **Machine-specific config goes in `~/.zshrc.local`** — sourced if present, never
 committed. Put work paths, secrets and per-host tweaks there instead of editing

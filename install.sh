@@ -211,6 +211,31 @@ elif ! grep -q "96443138+valentinmili" "$HOME/.codex/config.toml" 2>/dev/null; t
   ok "~/.codex/config.toml appended"
 fi
 
+# 5b-bis. OpenCode config - full permissions, matching `claude
+#         --dangerously-skip-permissions` and `codex --yolo`. OpenCode has no
+#         such CLI flag; "permission": "allow" is the config-file equivalent.
+mkdir -p "$HOME/.config/opencode"
+OPENCODE_CONFIG="$HOME/.config/opencode/opencode.json"
+if command -v python3 >/dev/null; then
+  python3 - "$OPENCODE_CONFIG" "$DOTFILES/opencode/opencode.json" <<'OC'
+import json, sys, os
+dst, src = sys.argv[1], sys.argv[2]
+new = json.load(open(src))
+cur = {}
+if os.path.exists(dst):
+    try:
+        cur = json.load(open(dst))
+    except Exception:
+        os.rename(dst, dst + ".bak")
+cur.update(new)
+json.dump(cur, open(dst, "w"), indent=2)
+open(dst, "a").write("\n")
+OC
+  ok "~/.config/opencode/opencode.json updated (permission: allow)"
+else
+  warn "python3 missing - copy opencode/opencode.json into ~/.config/opencode/ manually"
+fi
+
 # 5c. Global CLAUDE.md rule — every agent commit/push is authored as valentinmili.
 CLAUDE_MD="$HOME/.claude/CLAUDE.md"
 MD_MARKER="valentin-dotfiles: attribution rule"

@@ -51,6 +51,8 @@ export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 alias yolo="claude --dangerously-skip-permissions"
 alias c="yolo"
 alias x="codex --yolo"
+# OpenCode has no skip-permissions flag: full permissions come from
+# "permission": "allow" in ~/.config/opencode/opencode.json (see install.sh).
 alias o="opencode"
 
 # ─── yazi: cd to the directory you exit in ──────────────────────────────
