@@ -1,8 +1,15 @@
 # ─── PATH & Homebrew ────────────────────────────────────────────────────
 # This machine has both an ARM (/opt/homebrew) and an Intel (/usr/local)
 # Homebrew. Source both; the last one wins on PATH precedence.
+# On Apple Silicon, skip the Intel Homebrew when Rosetta can't run x86 code —
+# otherwise its x86-only binaries shadow everything with "bad CPU type".
 for _brew in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
-  [ -x "$_brew" ] && eval "$("$_brew" shellenv)"
+  [ -x "$_brew" ] || continue
+  if [ "$_brew" = /usr/local/bin/brew ] && [ "$(uname -m)" = arm64 ] && \
+     ! /usr/bin/arch -x86_64 /usr/bin/true 2>/dev/null; then
+    continue
+  fi
+  eval "$("$_brew" shellenv)"
 done
 unset _brew
 
@@ -28,14 +35,16 @@ zstyle ':completion:*' menu select
   source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # ─── Modern CLI tools ───────────────────────────────────────────────────
-command -v zoxide  >/dev/null && eval "$(zoxide init zsh)"
-command -v fzf     >/dev/null && eval "$(fzf --zsh)" 2>/dev/null
-command -v eza     >/dev/null && { alias ls='eza --icons --group-directories-first'; alias ll='eza -l --icons --git --group-directories-first'; alias la='eza -la --icons --git --group-directories-first'; alias lt='eza --tree --level=2 --icons'; }
-command -v bat     >/dev/null && { alias cat='bat --paging=never'; export BAT_THEME="Catppuccin Mocha"; }
-command -v lazygit >/dev/null && alias lg='lazygit'
+# _has: tool is on PATH *and* actually runs (guards against wrong-arch binaries).
+_has() { command -v "$1" >/dev/null && ( "$1" --version ) >/dev/null 2>&1; }
+_has zoxide  && eval "$(zoxide init zsh)"
+_has fzf     && eval "$(fzf --zsh)" 2>/dev/null
+_has eza     && { alias ls='eza --icons --group-directories-first'; alias ll='eza -l --icons --git --group-directories-first'; alias la='eza -la --icons --git --group-directories-first'; alias lt='eza --tree --level=2 --icons'; }
+_has bat     && { alias cat='bat --paging=never'; export BAT_THEME="Catppuccin Mocha"; }
+_has lazygit && alias lg='lazygit'
 
 # ─── Prompt ─────────────────────────────────────────────────────────────
-command -v starship >/dev/null && eval "$(starship init zsh)"
+_has starship && eval "$(starship init zsh)"
 
 # ─── Git shortcuts ──────────────────────────────────────────────────────
 alias gs='git status -sb'
@@ -83,6 +92,11 @@ fi
 # Google Cloud SDK
 [ -f "$HOME/Downloads/google-cloud-sdk/path.zsh.inc" ] && . "$HOME/Downloads/google-cloud-sdk/path.zsh.inc"
 [ -f "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc" ] && . "$HOME/Downloads/google-cloud-sdk/completion.zsh.inc"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+[ -s "$BUN_INSTALL/_bun" ] && source "$BUN_INSTALL/_bun"
 
 # SDKMAN — must stay at the very end of this file
 export SDKMAN_DIR="$HOME/.sdkman"
