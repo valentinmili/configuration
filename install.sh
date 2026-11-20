@@ -35,7 +35,7 @@ link() {
 
 # ─── 1. Dependencies ─────────────────────────────────────────────────────
 PKGS_CORE="zsh git curl tmux"
-PKGS_NICE="git-delta lazygit starship fzf bat eza zoxide yazi ripgrep"
+PKGS_NICE="git-delta lazygit starship fzf bat eza zoxide yazi ripgrep btop"
 
 say "Installing packages…"
 if [ "$OS" = "Darwin" ]; then
@@ -52,6 +52,9 @@ elif command -v apt-get >/dev/null; then
   # Packages not reliably in apt: install via their own channels.
   command -v delta    >/dev/null || warn "git-delta: install from https://github.com/dandavison/delta/releases"
   command -v lazygit  >/dev/null || warn "lazygit: install from https://github.com/jesseduffield/lazygit/releases"
+  # btop is in Debian 12+ / Ubuntu 22.04+; installed alone so older releases don't sink the batch.
+  command -v btop     >/dev/null || sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq btop || \
+    warn "btop: install from https://github.com/aristocratos/btop/releases"
   command -v starship >/dev/null && ok "starship present" || \
     curl -fsSL https://starship.rs/install.sh | sh -s -- -y
   command -v zoxide   >/dev/null || curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
@@ -60,9 +63,11 @@ elif command -v apt-get >/dev/null; then
     mkdir -p "$HOME/.local/bin" && ln -sf /usr/bin/batcat "$HOME/.local/bin/bat"
 elif command -v dnf >/dev/null; then
   sudo dnf install -y $PKGS_CORE git-delta ripgrep fzf bat eza zoxide || true
+  command -v btop     >/dev/null || sudo dnf install -y btop || \
+    warn "btop: install from https://github.com/aristocratos/btop/releases"
   command -v starship >/dev/null || curl -fsSL https://starship.rs/install.sh | sh -s -- -y
 elif command -v pacman >/dev/null; then
-  sudo pacman -S --needed --noconfirm $PKGS_CORE git-delta lazygit starship fzf bat eza zoxide yazi ripgrep || true
+  sudo pacman -S --needed --noconfirm $PKGS_CORE git-delta lazygit starship fzf bat eza zoxide yazi ripgrep btop || true
 else
   warn "Unknown package manager — install manually: $PKGS_CORE $PKGS_NICE"
 fi

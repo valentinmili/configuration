@@ -34,7 +34,7 @@ ssh <host> 'git clone https://github.com/valentinmili/configuration.git ~/config
 ## 2. What gets installed
 
 **Packages** — `zsh git curl tmux`, plus `git-delta lazygit starship fzf bat eza
-zoxide yazi ripgrep`. Homebrew on macOS; apt/dnf/pacman on Linux, falling back to
+zoxide yazi ripgrep btop`. Homebrew on macOS; apt/dnf/pacman on Linux, falling back to
 upstream install scripts for tools that distro repos don't carry.
 
 **zsh plugins** — `zsh-autosuggestions` and `zsh-syntax-highlighting`, cloned into
@@ -209,7 +209,7 @@ the tracked `zshrc`.
 
 ```sh
 echo $ZSH_VERSION                  # non-empty
-command -v starship delta tmux     # all resolve
+command -v starship delta tmux btop  # all resolve
 git config --get core.pager        # delta
 git config --get user.email        # 96443138+valentinmili@users.noreply.github.com
 git config --get core.hooksPath    # ~/.config/git/hooks
