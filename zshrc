@@ -57,7 +57,9 @@ alias gco='git checkout'
 
 # ─── AI agents ──────────────────────────────────────────────────────────
 export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
-alias yolo="claude --dangerously-skip-permissions"
+# yolo is a script (bin/yolo → ~/.local/bin): claude in bypass-permissions
+# mode, started in ~/work when launched from $HOME so the folder-trust prompt
+# is answered once ever, not once per session (see SETUP.md §7).
 alias c="yolo"
 alias x="codex --yolo"
 # OpenCode has no skip-permissions flag: full permissions come from

@@ -101,6 +101,7 @@ link tmux.conf        .tmux.conf
 link gitconfig        .gitconfig
 link gitignore_global .gitignore_global
 link starship.toml    .config/starship.toml
+link bin/yolo         .local/bin/yolo
 [ "$OS" = "Darwin" ] && link config/ghostty/config .config/ghostty/config
 
 # ─── 4b. Option-as-Alt (macOS terminals) ─────────────────────────────────

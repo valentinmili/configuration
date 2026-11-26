@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# yolo — claude --dangerously-skip-permissions, with one tweak: launched from
+# $HOME itself, it starts in ~/work instead. Claude Code never persists trust
+# for the home directory (session-only by design — trusting $HOME would trust
+# everything under it), so launching there prompts on every session. A
+# subdirectory's trust persists after one acceptance, and in bypass-permissions
+# mode Claude can work on any path regardless of its starting directory.
+# Used by the c alias (zshrc) and the M-c / M-C tmux bindings (tmux.conf).
+if [ "$PWD" = "$HOME" ]; then
+  mkdir -p "$HOME/work"
+  cd "$HOME/work" || exit 1
+fi
+exec claude --dangerously-skip-permissions "$@"

@@ -228,23 +228,20 @@ tmux new -s test                   # then press M-/ for the help popup
 
 - Each CLI needs a login on first use: `claude` (Anthropic), `codex` (OpenAI),
   `opencode auth login`.
-- `c` triggers Claude Code's *Bypass Permissions mode* warning once; accepting
-  it persists.
-- Claude Code's **folder-trust prompt in `$HOME` reappears every session — by
-  design**. The docs are explicit: home-directory trust is never written to
-  disk and "there is no setting to persist it" (trusting `$HOME` would trust
-  everything under it). Options: press Enter on *Yes* once per session, start
-  claude from a subdirectory (per-directory trust *does* persist, e.g.
-  `cd ~/work && c`), or hand-set the unsupported flag — it may be ignored or
-  reset for the home dir:
+- The first `c` run asks twice — Claude Code's *Bypass Permissions mode*
+  warning and the folder-trust prompt. Accept both; they persist.
 
-  ```sh
-  python3 -c "import json;p='$HOME/.claude.json';d=json.load(open(p));d['projects'].setdefault('$HOME',{})['hasTrustDialogAccepted']=True;json.dump(d,open(p,'w'),indent=2)"
-  ```
-
-  Codex has no such carve-out: `$HOME` is pre-trusted via `trust_level =
-  "trusted"` in `~/.codex/config.toml`, and OpenCode runs on
-  `"permission": "allow"`.
+**Why `c` from `~` starts in `~/work`:** Claude Code never persists trust for
+the home directory itself — the docs are explicit that home-dir trust is
+session-only and "there is no setting to persist it" (trusting `$HOME` would
+trust everything under it), so launching in `~` would prompt on *every*
+session. The `yolo` script (`bin/yolo`, behind the `c` alias and the `M-c`
+tmux bindings) therefore switches to `~/work` when — and only when — it is
+launched from `~` exactly. A subdirectory's trust persists after one
+acceptance, and in bypass-permissions mode Claude can work on any path
+regardless of its starting directory. Codex needs no such detour: `$HOME` is
+pre-trusted via `trust_level = "trusted"` in `~/.codex/config.toml`, and
+OpenCode runs on `"permission": "allow"`.
 
 **Font:** the prompt and tmux status use Nerd Font glyphs, rendered by your
 **local** terminal, not the remote host. If you see boxes, install any Nerd Font
