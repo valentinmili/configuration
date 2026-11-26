@@ -60,6 +60,12 @@ enabled on the default profile, Zed gets `terminal.option_as_meta = true`
 (inserted textually so JSONC comments survive). Ghostty and cmux are covered by
 the symlinked Ghostty config. See §3a.
 
+**AI agent CLIs** — `claude` (official native installer), `codex` (brew on
+macOS, static GitHub-release binary on Linux) and `opencode` (official
+installer into `~/.opencode/bin`, symlinked onto PATH). All reachable via
+`~/.local/bin`, no npm/node required. Codex gets `$HOME` pre-trusted in
+`~/.codex/config.toml` so `x` starts clean; see §7 for the prompts that remain.
+
 **Agent attribution** — merged into `~/.claude/settings.json` and
 `~/.codex/config.toml`, an attribution rule appended to `~/.claude/CLAUDE.md`,
 plus a global `commit-msg` hook. See §4.
@@ -210,12 +216,35 @@ the tracked `zshrc`.
 ```sh
 echo $ZSH_VERSION                  # non-empty
 command -v starship delta tmux btop  # all resolve
+command -v claude codex opencode   # all resolve (the c / x / o aliases)
 git config --get core.pager        # delta
 git config --get user.email        # 96443138+valentinmili@users.noreply.github.com
 git config --get core.hooksPath    # ~/.config/git/hooks
 alias c                            # c=yolo
 tmux new -s test                   # then press M-/ for the help popup
 ```
+
+**First-run prompts** (one-time, interactive — an agent can't do these for you):
+
+- Each CLI needs a login on first use: `claude` (Anthropic), `codex` (OpenAI),
+  `opencode auth login`.
+- `c` triggers Claude Code's *Bypass Permissions mode* warning once; accepting
+  it persists.
+- Claude Code's **folder-trust prompt in `$HOME` reappears every session — by
+  design**. The docs are explicit: home-directory trust is never written to
+  disk and "there is no setting to persist it" (trusting `$HOME` would trust
+  everything under it). Options: press Enter on *Yes* once per session, start
+  claude from a subdirectory (per-directory trust *does* persist, e.g.
+  `cd ~/work && c`), or hand-set the unsupported flag — it may be ignored or
+  reset for the home dir:
+
+  ```sh
+  python3 -c "import json;p='$HOME/.claude.json';d=json.load(open(p));d['projects'].setdefault('$HOME',{})['hasTrustDialogAccepted']=True;json.dump(d,open(p,'w'),indent=2)"
+  ```
+
+  Codex has no such carve-out: `$HOME` is pre-trusted via `trust_level =
+  "trusted"` in `~/.codex/config.toml`, and OpenCode runs on
+  `"permission": "allow"`.
 
 **Font:** the prompt and tmux status use Nerd Font glyphs, rendered by your
 **local** terminal, not the remote host. If you see boxes, install any Nerd Font

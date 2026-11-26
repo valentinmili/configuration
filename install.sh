@@ -277,7 +277,60 @@ git config --global user.name  "$GIT_NAME"
 git config --global user.email "$GIT_EMAIL"
 ok "git identity: $GIT_NAME <$GIT_EMAIL>"
 
-# ─── 6. Linux: auto-launch zsh from interactive bash ─────────────────────
+# ─── 6. AI agent CLIs ────────────────────────────────────────────────────
+# The c / x / o aliases (zshrc) and M-c / M-x / M-o tmux bindings need the
+# actual CLIs. Everything ends up on PATH via ~/.local/bin — no npm needed.
+say "Installing AI agent CLIs…"
+mkdir -p "$HOME/.local/bin"
+
+# Claude Code — official native installer (installs to ~/.local/bin).
+if command -v claude >/dev/null; then ok "claude present"
+else
+  curl -fsSL https://claude.ai/install.sh | bash || \
+    warn "claude: install failed — see https://code.claude.com/docs"
+fi
+
+# Codex — brew on macOS, static musl binary from GitHub releases on Linux.
+if command -v codex >/dev/null; then ok "codex present"
+elif [ "$OS" = "Darwin" ] && command -v brew >/dev/null; then
+  brew install codex && ok "codex installed" || warn "codex: brew install failed"
+else
+  case "$(uname -m)" in
+    x86_64)        CODEX_ARCH="x86_64-unknown-linux-musl" ;;
+    aarch64|arm64) CODEX_ARCH="aarch64-unknown-linux-musl" ;;
+    *)             CODEX_ARCH="" ;;
+  esac
+  if [ -n "$CODEX_ARCH" ] && \
+     curl -fsSL "https://github.com/openai/codex/releases/latest/download/codex-${CODEX_ARCH}.tar.gz" \
+       | tar -xz -C "$HOME/.local/bin" "codex-${CODEX_ARCH}"; then
+    mv "$HOME/.local/bin/codex-${CODEX_ARCH}" "$HOME/.local/bin/codex"
+    chmod 755 "$HOME/.local/bin/codex"
+    ok "codex installed"
+  else
+    warn "codex: no binary for $(uname -m) — try: npm i -g @openai/codex"
+  fi
+fi
+
+# OpenCode — official installer puts it in ~/.opencode/bin; symlink onto PATH.
+# --no-modify-path: the PATH line it would append targets ~/.zshrc, which is a
+# symlink into this repo — it would dirty the tracked zshrc.
+if command -v opencode >/dev/null; then ok "opencode present"
+else
+  curl -fsSL https://opencode.ai/install | bash -s -- --no-modify-path && \
+    ln -sf "$HOME/.opencode/bin/opencode" "$HOME/.local/bin/opencode" && \
+    ok "opencode installed" || warn "opencode: install failed — see https://opencode.ai/docs"
+fi
+
+# Codex workspace trust — pre-trust $HOME so `x` starts without the folder
+# prompt. (Claude Code's home-dir trust is session-only by design and has no
+# persistence setting; see SETUP.md §7. OpenCode is covered by
+# "permission": "allow" in §5b-bis.)
+if [ -f "$HOME/.codex/config.toml" ] && ! grep -qF "projects.\"$HOME\"" "$HOME/.codex/config.toml"; then
+  printf '\n# Pre-trust the home workspace so `x` starts without the folder-trust prompt.\n[projects."%s"]\ntrust_level = "trusted"\n' "$HOME" >> "$HOME/.codex/config.toml"
+  ok "codex: \$HOME pre-trusted"
+fi
+
+# ─── 7. Linux: auto-launch zsh from interactive bash ─────────────────────
 # No chsh — the login shell stays bash so non-interactive tooling is unaffected.
 if [ "$OS" = "Linux" ] && [ -f "$HOME/.bashrc" ]; then
   MARKER="# >>> dotfiles auto-launch zsh"
